@@ -46,46 +46,56 @@ router.post('/addnotes', fetchinguser, [
 
 // This is ROUTE-3 : Here we are updating the existing note by PUT: /notes/updatenote/id with Login required
 router.put('/updatenote/:id', fetchinguser, async (req, res) => {
-    const { title, description, tag } = req.body;
+    try {
+        const { title, description, tag } = req.body;
 
-    // Here we are creating a newnote object
-    const newNote = {};
-    if (title) { newNote.title = title };
-    if (description) { newNote.description = description };
-    if (tag) { newNote.tag = tag };
+        // Here we are creating a newnote object
+        const newNote = {};
+        if (title) { newNote.title = title };
+        if (description) { newNote.description = description };
+        if (tag) { newNote.tag = tag };
 
-    // Find the note to be modified
+        // Find the note to be modified
 
-    let note = await Notes.findById(req.params.id)
-    if (!note) {
-        return res.status(404).send("Not found")
+        let note = await Notes.findById(req.params.id)
+        if (!note) {
+            return res.status(404).send("Not found")
+        }
+
+        // Here we are allowing updation if user written this note
+        if (note.user.toString() !== req.user.id) {
+            return res.status(401).send('Not Allowed')
+        }
+
+        note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true })
+        res.json(note)
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send("There is some error!!")
     }
-
-    // Here we are allowing updation if user written this note
-    if (note.user.toString() !== req.user.id) {
-        return res.status(401).send('Not Allowed')
-    }
-
-    note = await Notes.findByIdAndUpdate(req.params.id, { $set: newNote }, { new: true })
-    res.json(note)
 })
 
 
 // This is ROUTE-4: Here we are deleting a particular note with DELETE: /notes/deletingnote/:id with Login required
 router.delete('/deletingnote/:id', fetchinguser, async (req, res) => {
-    // Find the note to be modified
-    let note = await Notes.findById(req.params.id)
-    if (!note) {
-        return res.status(404).send("Not found")
-    }
+    try {
+        // Find the note to be modified
+        let note = await Notes.findById(req.params.id)
+        if (!note) {
+            return res.status(404).send("Not found")
+        }
 
-    // Here we are allowing deletion if user written this note
-    if (note.user.toString() !== req.user.id) {
-        return res.status(401).send('Not Allowed')
-    }
+        // Here we are allowing deletion if user written this note
+        if (note.user.toString() !== req.user.id) {
+            return res.status(401).send('Not Allowed')
+        }
 
-    note = await Notes.findByIdAndDelete(req.params.id)
-    res.json({ Status: "DONE!" })
+        note = await Notes.findByIdAndDelete(req.params.id)
+        res.json({ Status: "DONE!" })
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send("There is some error!!")
+    }
 })
 
 module.exports = router

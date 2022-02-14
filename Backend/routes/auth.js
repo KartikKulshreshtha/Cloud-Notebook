@@ -3,11 +3,12 @@ const router = express.Router();
 const User = require('../models/User_Schema');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const fetchinguser = require('../middleware/fetchinguser');
 
 
 const JWT_TOKEN = "Kartikisagoodbo#i"
-// Here we create the user with a post request with /authentication and here no login is required
+// This is ROUTE-1:  Here we create the user with a post request with /authentication and here no login is required
 router.post('/', [
 
     // Here we checking the parameters
@@ -50,7 +51,7 @@ router.post('/', [
     }
 })
 
-// Creating an end point to login the user with /authentication/login
+// This is ROUTE-2: Creating an end point to login the user with /authentication/login
 router.post('/login', [
 
     // Here we checking the parameters
@@ -93,5 +94,18 @@ router.post('/login', [
         res.status(500).send("Internal Server Error!!")
     }
 })
+
+// This is ROUTE-3: Here we are getting all the users details with the end point /authentication/getuser
+router.post('/getuser', fetchinguser, async (req, res) => {
+    try {
+        const userId = req.user.id
+        const user = await User.findById(userId).select("-password")
+        res.json(user)
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send("Internal Server Error!!")
+    }
+})
+
 
 module.exports = router

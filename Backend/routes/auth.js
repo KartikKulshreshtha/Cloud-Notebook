@@ -37,16 +37,60 @@ router.post('/', [
             email: req.body.email,
         })
         const data = {
-            user:{
+            user: {
                 id: user.id
             }
         }
         const token = jwt.sign(data, JWT_TOKEN)
         // console.log(token)
-        res.json({token})
+        res.json({ token })
     } catch (error) {
         console.error(error.message)
         res.status(500).send("There is some error!!")
+    }
+})
+
+// Creating an end point to login the user with /authentication/login
+router.post('/login', [
+
+    // Here we checking the parameters
+    body('email', 'Enter a valid Email').isEmail(),
+    body('password', 'Password cannot be empty!!').exists(),
+
+], async (req, res) => {
+    // Here we making the validators for our application
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body
+    try {
+
+        // Here we are checking the given email in our database
+        let user = await User.findOne({ email })
+        if (!user) {
+            return res.status(404).json({ error: "Please enter your correct details" })
+        }
+
+        // Here we are comparing the given password with our stored password in the database
+        const ComparingPassword = await bcrypt.compare(password, user.password)
+        if (!ComparingPassword) {
+            return res.status(404).json({ error: "Please enter your correct details" })
+
+        }
+
+        // from here we are generating the jwt token for the user
+        const data = {
+            user: {
+                id: user.id
+            }
+        }
+        const token = jwt.sign(data, JWT_TOKEN)
+        // console.log(token)
+        res.json({ token })
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send("Internal Server Error!!")
     }
 })
 

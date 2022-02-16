@@ -5,7 +5,7 @@ export const NavBar = () => {
     let location = useLocation();
     return (
         <>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-success" style={{fontWeight: "bold", backgroundColor: "#090358!important;"}}>
+            <nav className="navbar navbar-expand-lg navbar-dark bg-success" style={{fontWeight: "bold", backgroundColor: "#090358!important"}}>
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">Navbar</Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

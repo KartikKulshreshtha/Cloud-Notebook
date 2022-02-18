@@ -5,21 +5,25 @@ import AddNote from './AddNote'
 
 export const Notes = () => {
     const context = useContext(NoteContext)
-    const { notes, getallNotes } = context
-    const [note, setNote] = useState({utitle: "", udescription: "", utag: ""})
+    const { notes, getallNotes, editNote } = context
+    const [note, setNote] = useState({id: "", utitle: "", udescription: "", utag: ""})
     useEffect(() => {
         getallNotes()
         //eslint-disable-next-line
     }, [])
 
+    const ref = useRef(null)
+    const refCancel = useRef(null)
+
     const updateNote = (currentNote) => {
         ref.current.click();
-        setNote({utitle:currentNote.title, udescription: currentNote.description, utag: currentNote.tag})
+        setNote({id: currentNote._id, utitle:currentNote.title, udescription: currentNote.description, utag: currentNote.tag})
     }
-    const ref = useRef(null)
 
-    const handleNote = (e)=>{
-        e.preventDefault();
+    const handleNote = async (e)=>{
+        const wait = await editNote(note.id, note.utitle, note.udescription, note.utag)
+        setNote(wait)
+        refCancel.current.click();
     }
     const onChange = (e)=>{
         setNote({...note, [e.target.name]: e.target.value})
@@ -41,21 +45,21 @@ export const Notes = () => {
                             <form>
                                 <div className="mb-3">
                                     <label htmlFor="title" style={{ fontWeight: "bold" }} className="form-label">Title</label>
-                                    <input type="text" className="form-control" name='utitle' value={note.title} id="title" onChange={onChange} aria-describedby="emailHelp" />
+                                    <input type="text" className="form-control" name='utitle' value={note.utitle} id="title" onChange={onChange} aria-describedby="emailHelp" />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="description" className="form-label" style={{ fontWeight: "bold" }}>Description</label>
-                                    <input type="text" className="form-control" name='udescription' value={note.description} onChange={onChange} id="description" />
+                                    <input type="text" className="form-control" name='udescription' value={note.udescription} onChange={onChange} id="description" />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="tag" className="form-label" style={{ fontWeight: "bold" }}>Tag</label>
-                                    <input type="text" className="form-control" name='utag' value={note.tag} onChange={onChange} id="tag" />
+                                    <input type="text" className="form-control" name='utag' value={note.utag} onChange={onChange} id="tag" />
                                 </div>
                                 {/* <button type="submit" className="btn btn-success" style={{ backgroundColor: "#3d7872!important" }}>Add Note</button> */}
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                            <button ref={refCancel} type="button" className="btn btn-dark" data-bs-dismiss="modal">Close</button>
                             <button type="button" className="btn btn-success" onClick={handleNote}>Save Note</button>
                         </div>
                     </div>

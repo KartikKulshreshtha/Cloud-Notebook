@@ -67,7 +67,7 @@ const NoteStates = (props) => {
 
     // Here we are calling the API
     const response = await fetch(`${host}/notes/updatenote/${id}`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjIwOWZiNWIxNTM5MWNiMDNkN2QwZDkzIn0sImlhdCI6MTY0NDgyNTUzMX0.tBCT6ANCENdCS1A-6OBoOQoFYyR2HcPVXkpL60Tyjc0"
@@ -86,6 +86,8 @@ const NoteStates = (props) => {
       }
 
     }
+    const json = response.json()
+    return json
   }
 
 

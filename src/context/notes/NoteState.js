@@ -2,96 +2,91 @@ import NoteContext from "./noteContext";
 import { useState } from "react";
 
 const NoteStates = (props) => {
+  const host = "http://localhost:5000";
+  const initialNotes = []
+  const [notes, setNotes] = useState(initialNotes)
 
-    const initialNotes = [
-      {
-        "_id": "620bf49137add9c6f1afd716",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "Python Book",
-        "description": "It's a Python book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-15T18:44:33.046Z",
-        "__v": 0
-      },
-      {
-        "_id": "620bf4a237add9c6f1afd718",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "Java Book",
-        "description": "It's a Java book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-15T18:44:50.330Z",
-        "__v": 0
-      },
-      {
-        "_id": "620bf4b337add9c6f1afd71a",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "Django Book",
-        "description": "It's a Django book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-15T18:45:07.859Z",
-        "__v": 0
-      },
-      {
-        "_id": "620ca31c99616b6afd577d5e",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "Flask Book",
-        "description": "It's a Flask book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-16T07:09:16.685Z",
-        "__v": 0
-      },
-      {
-        "_id": "620ca32999616b6afd577d60",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "C++ Book",
-        "description": "It's a C++ book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-16T07:09:29.509Z",
-        "__v": 0
-      },
-      {
-        "_id": "620ca33899616b6afd577d62",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "GO Book",
-        "description": "It's a GO book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-16T07:09:44.983Z",
-        "__v": 0
-      },
-      {
-        "_id": "620ca34299616b6afd577d64",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "Ruby Book",
-        "description": "It's a Ruby book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-16T07:09:54.809Z",
-        "__v": 0
-      },
-      {
-        "_id": "620ca34c99616b6afd577d66",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "JavaScript Book",
-        "description": "It's a JavaScript book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-16T07:10:04.969Z",
-        "__v": 0
-      },
-      {
-        "_id": "620ca35499616b6afd577d68",
-        "user": "6209fb5b15391cb03d7d0d93",
-        "title": "NoSQL Book",
-        "description": "It's a NoSQL book for absolute beginner",
-        "tag": "Study",
-        "timestamp": "2022-02-16T07:10:12.799Z",
-        "__v": 0
+  const getallNotes = async ()=>{
+    // API CALL
+    const response = await fetch(`${host}/notes/fetchingallnotes`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjIwOWZiNWIxNTM5MWNiMDNkN2QwZDkzIn0sImlhdCI6MTY0NDgyNTUzMX0.tBCT6ANCENdCS1A-6OBoOQoFYyR2HcPVXkpL60Tyjc0"
       }
-    ]
-    const [notes, setNotes] = useState(initialNotes)
-    return (
-        <NoteContext.Provider value={{notes, setNotes}}>
-            {props.children}
-        </NoteContext.Provider>
-    )
+    });
+    const json = await response.json()
+    setNotes(json)
+  }
+
+//-------------------------------------------------------------------------------------------
+
+  // Function to Add a Note
+  const addNote = async (title, description, tag) => {
+    // Here we are calling the API
+    const response = await fetch(`${host}/notes/addnotes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjIwOWZiNWIxNTM5MWNiMDNkN2QwZDkzIn0sImlhdCI6MTY0NDgyNTUzMX0.tBCT6ANCENdCS1A-6OBoOQoFYyR2HcPVXkpL60Tyjc0"
+      },
+      body: JSON.stringify({ title, description, tag })
+    });
+    // const json = response.json();
+
+    const note = {
+      "_id": "620ca35499616b6afd577d684",
+      "user": "6209fb5b15391cb03d7d0d93",
+      "title": title,
+      "description": description,
+      "tag": tag,
+      "timestamp": "2022-02-16T07:10:12.799Z",
+      "__v": 0
+    }
+    setNotes(notes.concat(note))
+  }
+
+  // --------------------------------------------------------------------------------------------
+  // Function to Delete a Note
+  const deleteNote = (id) => {
+    const newNotes = notes.filter((note) => { return note._id !== id })
+    setNotes(newNotes)
+  }
+
+  // --------------------------------------------------------------------------------------------
+
+  // Function to Edit a Note
+  const editNote = async (id, title, description, tag) => {
+
+    // Here we are calling the API
+    const response = await fetch(`${host}/notes/updatenote/620a163675e01833b47e5e38`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjIwOWZiNWIxNTM5MWNiMDNkN2QwZDkzIn0sImlhdCI6MTY0NDgyNTUzMX0.tBCT6ANCENdCS1A-6OBoOQoFYyR2HcPVXkpL60Tyjc0"
+      },
+      body: JSON.stringify({ title, description, tag })
+    });
+    // const json = response.json();
+
+    // This login is to edit the client notes details
+    for (let index = 0; index < notes.length; index++) {
+      const element = notes[index];
+      if (element._id === id) {
+        element.title = title;
+        element.description = description;
+        element.tag = tag;
+      }
+
+    }
+  }
+
+
+  return (
+    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote, getallNotes }}>
+      {props.children}
+    </NoteContext.Provider>
+  )
 }
 
 export default NoteStates;

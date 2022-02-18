@@ -32,7 +32,6 @@ const NoteStates = (props) => {
       },
       body: JSON.stringify({ title, description, tag })
     });
-    // const json = response.json();
 
     const note = {
       "_id": "620ca35499616b6afd577d684",
@@ -48,7 +47,15 @@ const NoteStates = (props) => {
 
   // --------------------------------------------------------------------------------------------
   // Function to Delete a Note
-  const deleteNote = (id) => {
+  const deleteNote = async (id) => {
+    // API CALL
+    const response = await fetch(`${host}/notes/deletingnote/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjIwOWZiNWIxNTM5MWNiMDNkN2QwZDkzIn0sImlhdCI6MTY0NDgyNTUzMX0.tBCT6ANCENdCS1A-6OBoOQoFYyR2HcPVXkpL60Tyjc0"
+      }
+    });
     const newNotes = notes.filter((note) => { return note._id !== id })
     setNotes(newNotes)
   }
@@ -59,7 +66,7 @@ const NoteStates = (props) => {
   const editNote = async (id, title, description, tag) => {
 
     // Here we are calling the API
-    const response = await fetch(`${host}/notes/updatenote/620a163675e01833b47e5e38`, {
+    const response = await fetch(`${host}/notes/updatenote/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

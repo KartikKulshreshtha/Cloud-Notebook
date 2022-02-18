@@ -33,15 +33,8 @@ const NoteStates = (props) => {
       body: JSON.stringify({ title, description, tag })
     });
 
-    const note = {
-      "_id": "620ca35499616b6afd577d684",
-      "user": "6209fb5b15391cb03d7d0d93",
-      "title": title,
-      "description": description,
-      "tag": tag,
-      "timestamp": "2022-02-16T07:10:12.799Z",
-      "__v": 0
-    }
+    
+    const note = await response.json()
     setNotes(notes.concat(note))
   }
 

@@ -59,6 +59,7 @@ router.post('/login', [
     body('password', 'Password cannot be empty!!').exists(),
 
 ], async (req, res) => {
+    let success = false;
     // Here we making the validators for our application
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -70,13 +71,13 @@ router.post('/login', [
         // Here we are checking the given email in our database
         let user = await User.findOne({ email })
         if (!user) {
-            return res.status(404).json({ error: "Please enter your correct details" })
+            return res.status(404).json({success, error: "Please enter your correct details" })
         }
 
         // Here we are comparing the given password with our stored password in the database
         const ComparingPassword = await bcrypt.compare(password, user.password)
         if (!ComparingPassword) {
-            return res.status(404).json({ error: "Please enter your correct details" })
+            return res.status(404).json({success, error: "Please enter your correct details" })
 
         }
 
@@ -88,7 +89,8 @@ router.post('/login', [
         }
         const token = jwt.sign(data, JWT_TOKEN)
         // console.log(token)
-        res.json({ token })
+        success = true
+        res.json({success, token })
     } catch (error) {
         console.error(error.message)
         res.status(500).send("Internal Server Error!!")

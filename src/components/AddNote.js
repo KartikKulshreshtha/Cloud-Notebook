@@ -20,17 +20,17 @@ const AddNote = () => {
                 <form>
                     <div className="mb-3">
                         <label htmlFor="title" style={{fontWeight: "bold"}} className="form-label">Title</label>
-                        <input type="text" className="form-control" name='title' id="title" onChange={onChange} aria-describedby="emailHelp" />
+                        <input type="text" className="form-control" name='title' value={note.title} id="title" onChange={onChange} aria-describedby="emailHelp" />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="description" className="form-label" style={{fontWeight: "bold"}}>Description</label>
-                        <input type="text" className="form-control" name='description' onChange={onChange} id="description" />
+                        <input type="text" className="form-control" name='description' value={note.description} onChange={onChange} id="description" />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="tag" className="form-label" style={{fontWeight: "bold"}}>Tag</label>
-                        <input type="text" className="form-control" name='tag' onChange={onChange} id="tag" />
+                        <input type="text" className="form-control" name='tag' value={note.tag} onChange={onChange} id="tag" />
                     </div>
-                    <button type="submit" className="btn btn-success" onClick={handleNote} style={{ backgroundColor: "#3d7872!important" }}>Add Note</button>
+                    <button disabled={note.title.length<5 || note.description.length<5} type="submit" className="btn btn-success" onClick={handleNote} style={{ backgroundColor: "#3d7872!important" }}>Add Note</button>
                 </form>
             </div>
         </div>

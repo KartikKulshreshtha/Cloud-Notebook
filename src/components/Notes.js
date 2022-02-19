@@ -60,7 +60,7 @@ export const Notes = () => {
                         </div>
                         <div className="modal-footer">
                             <button ref={refCancel} type="button" className="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-success" onClick={handleNote}>Save Note</button>
+                            <button disabled={note.utitle.length<5 || note.udescription.length<5} type="button" className="btn btn-success" onClick={handleNote}>Save Note</button>
                         </div>
                     </div>
                 </div>

@@ -31,13 +31,14 @@ export const Login = (props) => {
     return (
         <div>
             <form onSubmit={SubmitForm}>
+            <h1 className="container text-center">Login</h1>
                 <div className="container mb-3">
-                    <label htmlFor="email" className="form-label">Email address</label>
+                    <label htmlFor="email" className="form-label" style={{fontWeight: 'bold', fontSize: "20px"}}>Email address</label>
                     <input type="email" className="form-control" name="email" id="email" value={creds.email} onChange={onChange} aria-describedby="emailHelp" />
                     {/* <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div> */}
                 </div>
                 <div className="container mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
+                    <label htmlFor="password" className="form-label" style={{fontWeight: 'bold', fontSize: "20px"}}>Password</label>
                     <input type="password" className="form-control" name='password' value={creds.password} onChange={onChange} id="password" />
                 </div>
                 <button type="submit" className="btn btn-success">Submit</button>

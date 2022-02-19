@@ -2,13 +2,20 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import NoteContext from '../context/notes/noteContext'
 import { NoteItem } from './NoteItem'
 import AddNote from './AddNote'
+import { useNavigate } from 'react-router-dom'
 
 export const Notes = (props) => {
     const context = useContext(NoteContext)
+    const navigate = useNavigate()
     const { notes, getallNotes, editNote } = context
-    const [note, setNote] = useState({id: "", utitle: "", udescription: "", utag: ""})
+    const [note, setNote] = useState({ id: "", utitle: "", udescription: "", utag: "" })
     useEffect(() => {
-        getallNotes()
+        if (localStorage.getItem('token')) {
+            getallNotes()
+        }
+        else {
+            navigate('/login')
+        }
         //eslint-disable-next-line
     }, [])
 
@@ -17,21 +24,21 @@ export const Notes = (props) => {
 
     const updateNote = (currentNote) => {
         ref.current.click();
-        setNote({id: currentNote._id, utitle:currentNote.title, udescription: currentNote.description, utag: currentNote.tag})
+        setNote({ id: currentNote._id, utitle: currentNote.title, udescription: currentNote.description, utag: currentNote.tag })
     }
 
-    const handleNote = async (e)=>{
+    const handleNote = async (e) => {
         editNote(note.id, note.utitle, note.udescription, note.utag)
         refCancel.current.click();
         props.showAlert("Your Note has been updated successfully!!", 'success')
     }
-    const onChange = (e)=>{
-        setNote({...note, [e.target.name]: e.target.value})
+    const onChange = (e) => {
+        setNote({ ...note, [e.target.name]: e.target.value })
     }
     return (
         <>
-            <AddNote showAlert = {props.showAlert} />
-            <button style={{display: "none"}} type="button" ref={ref} className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <AddNote showAlert={props.showAlert} />
+            <button style={{ display: "none" }} type="button" ref={ref} className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Launch demo modal
             </button>
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -60,13 +67,16 @@ export const Notes = (props) => {
                         </div>
                         <div className="modal-footer">
                             <button ref={refCancel} type="button" className="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <button disabled={note.utitle.length<5 || note.udescription.length<5} type="button" className="btn btn-success" onClick={handleNote}>Save Note</button>
+                            <button disabled={note.utitle.length < 5 || note.udescription.length < 5} type="button" className="btn btn-success" onClick={handleNote}>Save Note</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div className='row'>
                 <h1>Your Notes</h1>
+                <div className="container mx-2">
+                    {notes.length === 0 && 'No notes to display'}
+                </div>
                 {notes.map((note) => {
                     return <NoteItem key={note._id} showAlert={props.showAlert} updateNote={updateNote} note={note} />
                 })}

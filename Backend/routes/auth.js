@@ -20,6 +20,7 @@ router.post('/', [
 
     // Here we making the validators for our application
     const errors = validationResult(req);
+    let success = false;
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
@@ -27,7 +28,7 @@ router.post('/', [
         // Here we are checking that the user with the given email is already exists or not!!
         let user = await User.findOne({ email: req.body.email });
         if (user) {
-            return res.status(404).json({ error: "Email is already exists!!" })
+            return res.status(404).json({success, error: "Email is already exists!!" })
         }
         const salt = await bcrypt.genSalt(10);
         const securedPassword = await bcrypt.hash(req.body.password, salt)
@@ -44,7 +45,8 @@ router.post('/', [
         }
         const token = jwt.sign(data, JWT_TOKEN)
         // console.log(token)
-        res.json({ token })
+        success = true;
+        res.json({success, token })
     } catch (error) {
         console.error(error.message)
         res.status(500).send("There is some error!!")
